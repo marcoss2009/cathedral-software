@@ -9,4 +9,4 @@ def limpiarTerminal():
         # Estamos en UNIX, osea, mac, linux, etc.
         system('clear')
 
-    print(" Cathedral Software ".center(80, '-'))
+    print(" Cathedral Software ".center(80, '='))

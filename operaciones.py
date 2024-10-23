@@ -59,7 +59,7 @@ def cargaOperaciones():
     # Limpiamos la terminal
     limpiarTerminal()
 
-    print(" Carga de Operaciones ".center(80,'='))
+    print(" Carga de Operaciones ".center(80,'-'))
 
     '''''
     Solicitamos el Número de Cliente
@@ -141,7 +141,7 @@ def reporteFacturasRecibos():
     # Limpiamos la terminal
     limpiarTerminal()
 
-    print(" Informe de Movimientos por Facturas y Recibos ".center(80,'='))
+    print(" Informe de Movimientos por Facturas y Recibos ".center(80,'-'))
     filtro = -1
     while (filtro == -1):
         try:
@@ -163,7 +163,7 @@ def reporteClienteVendedor():
     # Limpiamos la terminal
     limpiarTerminal()
 
-    print(" Informe de Movimientos filtrados por Cliente y Vendedor ".center(80,'='))
+    print(" Informe de Movimientos filtrados por Cliente y Vendedor ".center(80,'-'))
     filtro = -1
     while (filtro == -1):
         try:
@@ -216,7 +216,7 @@ def generarOperacionesRandom():
     # Limpiamos la terminal
     limpiarTerminal()
 
-    print(" Generar Operaciones al Azar ".center(80,'='))
+    print(" Generar Operaciones al Azar ".center(80,'-'))
 
     cantidadOperaciones = randint(2, 20)
 
