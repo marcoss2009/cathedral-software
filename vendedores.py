@@ -6,3 +6,6 @@ def cuentasCorrientesVendedor():
 
 def vendedorConMasVentas():
     print("1. Vendedor con más Ventas")
+
+def verificarVendedor(vendedor):
+    return True

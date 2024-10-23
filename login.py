@@ -1,2 +1,2 @@
-def menuIngreso(vendedores, claves):
+def menuIngreso():
     print(" Ingreso al Sistema ".center(80, '-'))
