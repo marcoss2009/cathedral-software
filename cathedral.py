@@ -13,7 +13,7 @@ def main():
     # Menú
     menu.mainMenu()
 
-    print(" Gracias por utilizar Cathedral Software ".center(80, '-'))
+    print(" Gracias por utilizar Cathedral Software ".center(80, '='))
     print(" π".rjust(80, '-'))
 
 if __name__ == "__main__":
