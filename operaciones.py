@@ -32,13 +32,12 @@ def leerOperaciones(busqueda = "operacion", filtro = 0):
         try:
             # Leemos el archivo
             linea = archivoOperaciones.readline()
-            
             while linea:
                 cliente, vendedor, operacion, monto = linea.split(";")
                 if (
                     (busqueda == "operacion" and int(operacion) == filtro)
                     or (busqueda == "cliente" and int(cliente) == filtro)
-                    or (busqueda == "vendedor" and vendedor == filtro)
+                    or (busqueda == "vendedor" and int(vendedor) == filtro)
                 ):
                     # Lo mostramos en Modo Tabla
                     # Al monto primero lo convertimos a int para eliminar el salto de línea
@@ -92,12 +91,20 @@ def cargaOperaciones():
     Al igual que en el menú, vendedor va a valer cero hasta que el vendedor ingresado sea válido
     '''''
     vendedor = 0
-    while (vendedor == 0):
-        vendedor = input("Ingrese el Vendedor: ")
-
-        if verificarVendedor(vendedor) == False:
-            print('ERROR: El Vendedor ingresado no existe')
-            vendedor = 0
+    while(vendedor == 0):
+        try:
+            vendedor = int(input("Ingrese el Número de Vendedor: "))
+        except ValueError:
+            print('ERROR: El Número de Vendedor solo puede contener números')
+        else:
+            '''''
+            Verificamos si el vendedor existe
+            Si el vendedor no existe entoncés su valor vuelve a ser 0
+            y volvemos a pedir el vendedor infinitamente hasta que ingrese un vendedor válido
+            '''''
+            if verificarVendedor(vendedor) == False:
+                print('ERROR: El Vendedor ingresado no existe')
+                vendedor = 0
         
     '''''
     Solicitamos el Tipo de Operación
@@ -157,7 +164,7 @@ def reporteFacturasRecibos():
     leerOperaciones("operacion", filtro)
 
     # Leemos cualquier tecla para volver al menú principal
-    input("Presione una tecla para continuar...")
+    input("Presione Enter tecla para continuar...")
 
 def reporteClienteVendedor():
     # Limpiamos la terminal
@@ -200,17 +207,25 @@ def reporteClienteVendedor():
                     valorBuscar = 0
         else:
             # Filtramos por Vendedor
-            valorBuscar = input("Ingrese el Vendedor: ")
-
-            if verificarVendedor(valorBuscar) == False:
-                print('ERROR: El Vendedor ingresado no existe')
-                valorBuscar = 0
+            try:
+                valorBuscar = int(input("Ingrese el Código de Vendedor para filtrar: "))
+            except ValueError:
+                print('ERROR: El Código de Vendedor solo puede contener números')
+            else:
+                '''''
+                Verificamos si el vendedor existe
+                Si el vendedor no existe entoncés su valor vuelve a ser 0
+                y volvemos a pedir el vendedor infinitamente hasta que ingrese un vendedor válido
+                '''''
+                if verificarVendedor(valorBuscar) == False:
+                    print('ERROR: El Vendedor ingresado no existe')
+                    valorBuscar = 0
 
     # Ahora vamos a leer todos los registros que cumplan con esta condición
     leerOperaciones("vendedor" if bool(filtro) == True else "cliente", valorBuscar)
 
     # Leemos cualquier tecla para volver al menú principal
-    input("Presione una tecla para continuar...")
+    input("Presione Enter tecla para continuar...")
 
 def generarOperacionesRandom():
     # Limpiamos la terminal
@@ -221,4 +236,153 @@ def generarOperacionesRandom():
     cantidadOperaciones = randint(2, 20)
 
     print(f"Se han generado {cantidadOperaciones} de operaciones al azar")
-    input("Presione una tecla para continuar...")
+    input("Presione Enter para continuar...")
+
+def cuentaCorriente():
+    # Limpiamos la terminal 
+    limpiarTerminal()
+
+    print(" Vista de Cuenta Corriente por Cliente ".center(80,'='))
+
+    # Vamos a solicitar un cliente
+    clienteBuscar = 0
+    while clienteBuscar == 0:
+        try:
+            clienteBuscar = int(input("Ingrese el Número de Cliente para consultar: "))
+        except ValueError:
+            print("ERROR: El Número de Cliente debe ser un número")
+        else:
+            # Verificamos si el cliente existe
+            if (verificarCliente(clienteBuscar) == False):
+                clienteBuscar = 0
+
+    # Seteamos la tabla
+    columnasMovimientos = ["Movimiento", "Debe", "Haber"]
+    filasMovimientos = []
+    debe = 0
+    haber = 0
+
+    '''''
+    Nombre del archivo: operaciones.csv
+    Entramos al archivo EN MODO LECTURA
+    '''''
+    try:
+        archivoOperaciones = open(r"operaciones.csv", "rt")
+    except IOError:
+        print("ERROR al abrir el archivo de operaciones")
+    else:
+        try:
+            # Leemos el archivo
+            linea = archivoOperaciones.readline()
+            
+            while linea:
+                cliente, vendedor, operacion, monto = linea.split(";")
+                if (int(cliente) == clienteBuscar):
+                    # Lo mostramos en Modo Tabla
+                    # Al monto primero lo convertimos a int para eliminar el salto de línea
+                    # y luego a texto nuevamente para poder concatenarlo con el símbolo "$"
+                    filasMovimientos.append([("Factura" if bool(int(operacion)) == True else "Recibo"), ("$" + str(int(monto)) if bool(int(operacion)) == True else ""), ("" if bool(int(operacion)) == True else "$" + str(int(monto)))])
+
+                    # Sumamos Debe o Haber
+                    if bool(int(operacion)) == True:
+                        # Es una Factura, sumamos en Debe
+                        debe = debe + int(monto)
+                    else:
+                        # Es un Recibo, sumamos en Haner
+                        haber = haber + int(monto)
+
+                # Leemos la próxima línea
+                linea = archivoOperaciones.readline()
+        finally:            
+            archivoOperaciones.close()
+
+    # Sumamos como última fila al total de debe y haber
+    filasMovimientos.append(["Suma de Movimientos", "$" + str(debe), "$" + str(haber)])
+    filasMovimientos.append(["", "Saldo Final: ", "$" + str(haber-debe)])
+    
+    # Creamos la Tabla
+    crearTabla(columnasMovimientos, filasMovimientos)
+    input("Presione Enter tecla para continuar...")
+
+'''''
+Función para ser consumida por el resto de los módulos
+Indicandole el tipo de operación (False para Recibos o True para Facturas)
+Obtenemos todos los movimientos de un cliente
+'''''
+def obtenerOperacionesPorCliente(buscarCliente, buscarOperacion = False):
+    # Inicializamos una lista vacía para almacenar las operaciones que encontremos
+    listaOperaciones = []
+
+    '''''
+    Nombre del archivo: operaciones.csv
+    Entramos al archivo EN MODO LECTURA
+    '''''
+    try:
+        archivoOperaciones = open(r"operaciones.csv", "rt")
+    except IOError:
+        print("ERROR al abrir el archivo de operaciones")
+    else:
+        try:
+            # Leemos el archivo
+            linea = archivoOperaciones.readline()
+            
+            while linea:
+                cliente, vendedor, operacion, monto = linea.split(";")
+
+                '''''
+                Si el cliente de la línea actual coincide con el cliente a buscar
+                Y al mismo tiempo la operación de la línea actual coincide con la operación a buscar
+                Entoncés ejecutamos el código dentro del if
+                '''''
+                if (int(cliente) == buscarCliente and bool(int(operacion)) == buscarOperacion):
+                    listaOperaciones.append([int(cliente), int(vendedor), bool(int(operacion)), int(monto)])
+
+                # Leemos la próxima línea
+                linea = archivoOperaciones.readline()
+        finally:            
+            archivoOperaciones.close()
+
+    # Devolvemos la lista vacía o con los elementos encontrados
+    return listaOperaciones
+
+'''''
+Función para ser consumida por el resto de los módulos
+Indicandole un Cliente obtenemos el saldo final de un cliente
+'''''
+def calcularSaldoFinal(clienteBuscar):
+    # Definimos la variables acumuladoras
+    debe = 0
+    haber = 0
+
+    '''''
+    Nombre del archivo: operaciones.csv
+    Entramos al archivo EN MODO LECTURA
+    '''''
+    try:
+        archivoOperaciones = open(r"operaciones.csv", "rt")
+    except IOError:
+        print("ERROR al abrir el archivo de operaciones")
+    else:
+        try:
+            # Leemos el archivo
+            linea = archivoOperaciones.readline()
+            
+            while linea:
+                cliente, vendedor, operacion, monto = linea.split(";")
+                if (int(cliente) == clienteBuscar):
+                    # Sumamos Debe o Haber
+                    if bool(int(operacion)) == True:
+                        # Es una Factura, sumamos en Debe
+                        debe = debe + int(monto)
+                    else:
+                        # Es un Recibo, sumamos en Haner
+                        haber = haber + int(monto)
+
+                # Leemos la próxima línea
+                linea = archivoOperaciones.readline()
+        finally:            
+            archivoOperaciones.close()
+
+    # El saldo final de un cliente es el resultado de la resta
+    # haber - debe
+    return haber - debe

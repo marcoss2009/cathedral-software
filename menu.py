@@ -26,7 +26,7 @@ def selectMainMenu():
     limpiarTerminal()
 
     # Seleccione una opción
-    print(" Seleccione una opción para comenzar ".center(80,'-'))
+    print(" Seleccione una opción para comenzar ".center(80,'='))
     print("1. Ingreso al Módulo de Clientes")
     print("2. Ingreso al Módulo de Vendedores")
     print("3. Ingreso al Módulo de Operaciones")
@@ -53,7 +53,7 @@ def menuClientes():
     limpiarTerminal()
 
     # Seleccione una opción
-    print(" Módulo de Clientes ".center(80,'-'))
+    print(" Módulo de Clientes ".center(80,'='))
     print("1. Carga de Clientes")
     print("2. Consultar Clientes")
     print("3. Generar Clientes al Azar")
@@ -80,7 +80,7 @@ def menuVendedores():
     limpiarTerminal()
 
     # Seleccione una opción
-    print(" Módulo de Vendedores ".center(80,'-'))
+    print(" Módulo de Vendedores ".center(80,'='))
     print("1. Cuentas Corrientes por Vendedor")
     print("2. Volver al Menú Principal")
 
@@ -99,7 +99,7 @@ def menuOperaciones():
     limpiarTerminal()
 
     # Seleccione una opción
-    print(" Módulo de Operaciones ".center(80,'-'))
+    print(" Módulo de Operaciones ".center(80,'='))
     print("1. Carga de Operaciones")
     print("2. Generar Operaciones al Azar")
     print("3. Volver al Menú Principal")
@@ -122,17 +122,18 @@ def menuReportes():
     limpiarTerminal()
 
     # Seleccione una opción
-    print(" Módulo de Reportes ".center(80,'-'))
+    print(" Módulo de Reportes ".center(80,'='))
     print("1. Vendedor con más Ventas")
     print("2. Cliente con más Compras")
     print("3. Cliente/s más deudor/es")
     print("4. Informe de Movimientos filtrados por Facturas y Recibos")
     print("5. Informe de Movimientos filtrados por Cliente y Vendedor")
-    print("6. Volver al Menú Principal")
+    print("6. Vista de Cuenta Corriente por Cliente")
+    print("7. Volver al Menú Principal")
 
     opcion = int(input("Seleccione una opción: "))
 
-    while (opcion < 1 or opcion > 6):
+    while (opcion < 1 or opcion > 7):
         opcion = int(input("Seleccione una opción: "))
 
     if opcion == 1:
@@ -149,5 +150,8 @@ def menuReportes():
 
     if opcion == 5:
         operaciones.reporteClienteVendedor()
+
+    if opcion == 6:
+        operaciones.cuentaCorriente()
     
     mainMenu()
