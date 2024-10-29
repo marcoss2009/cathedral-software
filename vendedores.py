@@ -1,5 +1,17 @@
-def cuentasCorrientesVendedor(vendedores): #chequear como recibo la lista de vendedores
-    print("1. Cuentas Corrientes por Vendedor")
+from tablas import crearTabla
+from terminal import limpiarTerminal
+
+cuentas = {
+    "1000": 1234,
+    "1001": 2345,
+    "1002": 3456,
+    "1003": 4567,
+    "1004": 5678}
+
+def cuentasCorrientesVendedor():#chequear como recibo la lista de vendedores
+    limpiarTerminal()
+    
+    print(" Cuentas Corrientes por Vendedor ".center(80, '-'))
     
     while True:
         try:
@@ -10,72 +22,76 @@ def cuentasCorrientesVendedor(vendedores): #chequear como recibo la lista de ven
             continue  # Volver al inicio del ciclo si hay un error de conversión
             
         else:
-            if vendedorBuscado in vendedores:
-                print("Vendedor encontrado.")
+            if str(vendedorBuscado) in cuentas:
                 break  # Salir del ciclo si el vendedor existe
             else:
                 print("Error: el vendedor no existe")
 
             
-        clienteLista = []
-        operacionesLista = []
-        saldoLista = []
+    clienteLista = []
+    operacionesLista = []
+    saldoLista = []
 
-        try:    
-            archivo = open('prueba.txt', mode='r') #chequear nombre del archivo
-        except IOError:
-            print("Error al abrir el archivo")
-        else:
-            for linea in archivo:
-                cliente, vendedor, operacion, monto = linea.split(";")
-                
-                # Convertir valores a enteros
-                cliente = int(cliente)
-                vendedor = int(vendedor)
-                operacion = int(operacion)
-                monto = int(monto)
-                
-                # Verificar si el vendedor coincide con el buscado
-                if vendedor == vendedorBuscado:
-                    if cliente not in clienteLista:
-                        clienteLista.append(cliente)
-                        saldo_inicial = monto if operacion == 1 else -monto
-                        saldoLista.append(saldo_inicial)
-                        operacionesLista.append([operacion])
-                    else:
-                        # Si el cliente ya está en la lista, actualizar saldo y operaciones
-                        indice_cliente = clienteLista.index(cliente)
-                        operacionesLista[indice_cliente].append(operacion)
+    try:    
+        archivo = open('operaciones.csv', mode='rt') #chequear nombre del archivo
+    except IOError:
+        print("Error al abrir el archivo")
+    else:
+        for linea in archivo:
+            cliente, vendedor, operacion, monto = linea.split(";")
+            
+            # Convertir valores a enteros
+            cliente = int(cliente)
+            vendedor = int(vendedor)
+            operacion = int(operacion)
+            monto = int(monto)
+            
+            # Verificar si el vendedor coincide con el buscado
+            if vendedor == vendedorBuscado:
+                if cliente not in clienteLista:
+                    clienteLista.append(cliente)
+                    saldo_inicial = monto if operacion == 1 else -monto
+                    saldoLista.append(saldo_inicial)
+                    operacionesLista.append([operacion])
+                else:
+                    # Si el cliente ya está en la lista, actualizar saldo y operaciones
+                    indice_cliente = clienteLista.index(cliente)
+                    operacionesLista[indice_cliente].append(operacion)
+                    
+                    # Actualizar saldo según tipo de operación
+                    if operacion == 1:
+                        saldoLista[indice_cliente] += monto
+                    elif operacion == 0:
+                        saldoLista[indice_cliente] -= monto
                         
-                        # Actualizar saldo según tipo de operación
-                        if operacion == 1:
-                            saldoLista[indice_cliente] += monto
-                        elif operacion == 0:
-                            saldoLista[indice_cliente] -= monto
-                            
-            print(f" Cuentas Corrientes del Vendedor: {vendedorBuscado} ".center(80, '-'))
+        print(f" Cuentas Corrientes del Vendedor: {vendedorBuscado} ".center(80, '-'))
+        
+        if len(clienteLista) == 0:
+            print(" No hay movimientos para mostrar ".center(80, '-'))
+        else:
+            filas = []
+            for i in range(len(clienteLista)):
+                facturas = operacionesLista[i].count(1)  # Contar facturas (1)
+                recibos = operacionesLista[i].count(0)   # Contar recibos (0)
+                
+                filas.append([clienteLista[i], facturas, recibos, saldoLista[i]])
+                
+            columnas = ["cliente","facturas","recibos","saldo"]
             
-            if len(clienteLista) == 0:
-                print(" No hay movimientos para mostrar ".center(80, '-'))
-            else:
-                for i in range(len(clienteLista)):
-                    facturas = operacionesLista[i].count(1)  # Contar facturas (1)
-                    recibos = operacionesLista[i].count(0)   # Contar recibos (0)
-                    print("cliente: ",clienteLista[i])
-                    print("Cantidad de facturas: ", facturas)
-                    print("Cantidad de recibos: ", recibos)
-                    print("Saldo total del cliente: $", saldoLista[i])
-                    print("-" * 40)
-            
-        finally:
-            archivo.close()
-
+            crearTabla(columnas,filas)
+        
+    finally:
+        archivo.close()
+        
+    input("presione enter para continuar")
+        
 
 def vendedorConMasVentas():
-    print("1. Vendedor con más Ventas")
+    limpiarTerminal()
+    print(" Vendedor con más Ventas ".center(80, '-'))
     
     try:    
-        archivo = open('prueba.txt', mode='r') #chequear nombre del archivo
+        archivo = open('operaciones.csv', mode='rt') #chequear nombre del archivo
     except IOError:
         print("Error al abrir el archivo")
     else:
@@ -114,12 +130,16 @@ def vendedorConMasVentas():
         else:
             print("No se encontraron datos de ventas.")
             
+    input("presione enter para continuar")
+            
             
 
 #funcion lambda para verificar que el vendedor existe. 
 #habria que corregir que reciba por parametro la lista de vendedores    
-verificarVendedor = lambda buscado: True if buscado in [1000, 1001, 1002, 1003, 1004] else False
+verificarVendedor = lambda buscado,cuentas: True if buscado in cuentas else False
     
 
+def traerVendedores():
+    return cuentas
 
                     

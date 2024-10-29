@@ -6,7 +6,7 @@ def menuIngreso(cuentas):
     
     print(" Ingreso al Sistema ".center(80,'-'))
     
-    while True:  
+    while True: 
         usuario = input("Ingrese usuario: ")
         
         if usuario in cuentas:  # Verifica si el usuario está en el diccionario
