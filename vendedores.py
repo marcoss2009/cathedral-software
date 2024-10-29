@@ -85,7 +85,6 @@ def cuentasCorrientesVendedor():#chequear como recibo la lista de vendedores
         
     input("presione enter para continuar")
         
-
 def vendedorConMasVentas():
     limpiarTerminal()
     print(" Vendedor con más Ventas ".center(80, '-'))
