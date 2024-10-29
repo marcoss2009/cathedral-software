@@ -1,10 +1,14 @@
 # Imports
 import login
 import menu
+from vendedores import traerVendedores
     
 def main():
+    # Diccionario con los usuarios y sus contraseñas
+    cuentas = traerVendedores()
+
     # Ingreso al sistema
-    login.menuIngreso()
+    login.menuIngreso(cuentas)
 
     # Menú
     menu.mainMenu()
