@@ -1,6 +1,6 @@
 from terminal import limpiarTerminal
 from tablas import crearTabla
-from clientes import verificarCliente
+#from clientes import verificarCliente
 from vendedores import verificarVendedor
 from random import randint
 
