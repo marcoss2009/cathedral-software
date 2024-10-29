@@ -26,7 +26,7 @@ def selectMainMenu():
     limpiarTerminal()
 
     # Seleccione una opción
-    print(" Seleccione una opción para comenzar ".center(80,'='))
+    print(" Seleccione una opción para comenzar ".center(80,'-'))
     print("1. Ingreso al Módulo de Clientes")
     print("2. Ingreso al Módulo de Vendedores")
     print("3. Ingreso al Módulo de Operaciones")
@@ -53,7 +53,7 @@ def menuClientes():
     limpiarTerminal()
 
     # Seleccione una opción
-    print(" Módulo de Clientes ".center(80,'='))
+    print(" Módulo de Clientes ".center(80,'-'))
     print("1. Carga de Clientes")
     print("2. Consultar Clientes")
     print("3. Generar Clientes al Azar")
@@ -80,7 +80,7 @@ def menuVendedores():
     limpiarTerminal()
 
     # Seleccione una opción
-    print(" Módulo de Vendedores ".center(80,'='))
+    print(" Módulo de Vendedores ".center(80,'-'))
     print("1. Cuentas Corrientes por Vendedor")
     print("2. Volver al Menú Principal")
 
@@ -99,7 +99,7 @@ def menuOperaciones():
     limpiarTerminal()
 
     # Seleccione una opción
-    print(" Módulo de Operaciones ".center(80,'='))
+    print(" Módulo de Operaciones ".center(80,'-'))
     print("1. Carga de Operaciones")
     print("2. Generar Operaciones al Azar")
     print("3. Volver al Menú Principal")
@@ -122,7 +122,7 @@ def menuReportes():
     limpiarTerminal()
 
     # Seleccione una opción
-    print(" Módulo de Reportes ".center(80,'='))
+    print(" Módulo de Reportes ".center(80,'-'))
     print("1. Vendedor con más Ventas")
     print("2. Cliente con más Compras")
     print("3. Cliente/s más deudor/es")
