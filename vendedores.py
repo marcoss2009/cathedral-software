@@ -136,7 +136,7 @@ def vendedorConMasVentas():
 
 #funcion lambda para verificar que el vendedor existe. 
 #habria que corregir que reciba por parametro la lista de vendedores    
-verificarVendedor = lambda buscado,cuentas: True if buscado in cuentas else False
+verificarVendedor = lambda buscado: True if str(buscado) in cuentas else False
     
 
 def traerVendedores():
