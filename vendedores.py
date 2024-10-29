@@ -50,7 +50,7 @@ def cuentasCorrientesVendedor():#chequear como recibo la lista de vendedores
             if vendedor == vendedorBuscado:
                 if cliente not in clienteLista:
                     clienteLista.append(cliente)
-                    saldo_inicial = monto if operacion == 1 else -monto
+                    saldo_inicial = monto if operacion == 0 else -monto
                     saldoLista.append(saldo_inicial)
                     operacionesLista.append([operacion])
                 else:
@@ -60,9 +60,9 @@ def cuentasCorrientesVendedor():#chequear como recibo la lista de vendedores
                     
                     # Actualizar saldo según tipo de operación
                     if operacion == 1:
-                        saldoLista[indice_cliente] += monto
-                    elif operacion == 0:
                         saldoLista[indice_cliente] -= monto
+                    elif operacion == 0:
+                        saldoLista[indice_cliente] += monto
                         
         print(f" Cuentas Corrientes del Vendedor: {vendedorBuscado} ".center(80, '-'))
         

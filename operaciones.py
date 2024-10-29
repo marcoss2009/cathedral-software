@@ -14,7 +14,7 @@ def cargarOpereacion(cliente, vendedor, operacion, monto):
     except IOError:
         print("ERROR al abrir el archivo de operaciones")
     else:
-        archivoOperaciones.write(str(cliente) + ";" + vendedor + ";" + str(operacion) + ";" + str(monto) + "\n")
+        archivoOperaciones.write(str(cliente) + ";" + str(vendedor) + ";" + str(operacion) + ";" + str(monto) + "\n")
         archivoOperaciones.close()
 
 def leerOperaciones(busqueda = "operacion", filtro = 0):
