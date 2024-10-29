@@ -1,7 +1,7 @@
 import random
 from terminal import limpiarTerminal
 from tablas import crearTabla
-from operaciones import obtenerOperacionesPorCliente
+from operacionesExternas import obtenerOperacionesPorCliente
 
 clientes = []
 saldos = []
@@ -99,6 +99,9 @@ def clientesDeudores():
     listaDeudores = []
     saldoDeudores  = []
 
+    columnas = ["Cliente", "Saldo"]
+    filas = []
+
     print(" Cliente/s más deudor/es ".center(80,'-'))
 
     # Recorremos la lista de clientes y consultamos su deuda
@@ -109,10 +112,10 @@ def clientesDeudores():
         if (saldoCliente < 0):
             listaDeudores.append(i)
             saldoDeudores.append(saldoCliente)
-    
-    # Mostramos la lista de los clientes deudores en formato tabla
-    for i in range(len(listaDeudores)):
-        print(f"El cliente {listaDeudores[i]} tiene un saldo deudor de ${saldoDeudores[i]}")
+            filas.append([i, "$" + str(saldoCliente)])
+
+    # Mostramos en Tabla
+    crearTabla(columnas, filas)
 
     input("Presione Enter para continuar")
 
