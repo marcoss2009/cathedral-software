@@ -5,7 +5,7 @@ from operacionesExternas import obtenerOperacionesPorCliente
 
 clientes = []
 saldos = []
-clientesCargados = False
+clientesCargados = [False]
 
 def cargaClientes():
     limpiarTerminal()
@@ -13,8 +13,7 @@ def cargaClientes():
 
     print(" Carga de Clientes ".center(80,'-'))
 
-    numeroCliente = 0
-    while numeroCliente == 0:
+    while True:
         try:
             numeroCliente = int(input("Ingrese el Número de Cliente: "))
         except ValueError:
@@ -23,7 +22,10 @@ def cargaClientes():
             # El código de cliente proporcionado es un número
             if (verificarCliente(numeroCliente) == True):
                 # El cliente existe, lo pedimos de nuevo
-                numeroCliente = 0
+                print("El cliente ingresado ya existe. Ingrese uno nuevo.")
+            else:
+                # No existe el cliente, así que rompemos el ciclo y continuamos
+                break;
     
     guardarCliente(numeroCliente)
 
@@ -46,18 +48,19 @@ def consultarCliente():
     cargarLista(clientesCargados)
 
     print(" Consultar Clientes ".center(80,'-'))
-    numeroCliente = 0
-    while numeroCliente == 0:
+    while True:
         try:
             numeroCliente = int(input("Ingrese el Número de Cliente: "))
         except ValueError:
             print("ERROR: el Código de Cliente debe ser númerico")
         else:
             # El código de cliente proporcionado es un número
-            if (verificarCliente(numeroCliente) == False):
-                # El cliente no existe, lo pedimos de nuevo
-                numeroCliente = 0
-    
+            if (verificarCliente(numeroCliente) == True):
+                # El cliente existe, rompemos el ciclo
+                break
+            else:
+                # El cliente no existe
+                print("El cliente indicado no existe")
     # Ya tengo el número de cliente en la variable numeroCliente
     # Ahora busco el saldo en la lista saldos
     indiceCliente = clientes.index(numeroCliente)
@@ -87,17 +90,17 @@ def clienteMasCompras():
             indiceMasCompras = i
             cantidadCompras = len(comprasCliente)
 
-    print(f"El cliente {clientes[indiceMasCompras]} tiene {cantidadCompras} compras.")
+    # Qué pasa si no hay compras?
+    if cantidadCompras == 0:
+        print("No hay suficientes datos para mostrar.")
+    else:
+        print(f"El cliente {clientes[indiceMasCompras]} tiene {cantidadCompras} compras.")
 
     input("Presione Enter para continuar")
 
 def clientesDeudores():
     limpiarTerminal()
     cargarLista(clientesCargados)
-
-    # Lista donde almacenaremos los clientes deudores
-    listaDeudores = []
-    saldoDeudores  = []
 
     columnas = ["Cliente", "Saldo"]
     filas = []
@@ -110,9 +113,7 @@ def clientesDeudores():
         saldoCliente = saldos[i]
 
         if (saldoCliente < 0):
-            listaDeudores.append(i)
-            saldoDeudores.append(saldoCliente)
-            filas.append([i, "$" + str(saldoCliente)])
+            filas.append([clientes[i], "$" + str(saldoCliente)])
 
     # Mostramos en Tabla
     crearTabla(columnas, filas)
@@ -144,7 +145,7 @@ def generarClientesRandom():
     input("Presione Enter para continuar")
 
 def cargarLista(clientesCargados):
-    if (clientesCargados == False):
+    if (clientesCargados[0] == False):
         # Leer archivo de clientes.csv
         try:
             archivoCliente = open(r"clientes.csv","rt")
@@ -161,7 +162,7 @@ def cargarLista(clientesCargados):
 
                 linea = archivoCliente.readline()
 
-            clientesCargados = True
+            clientesCargados[0] = True
             archivoCliente.close()
 
 def verificarCliente(buscarCliente):
@@ -192,7 +193,10 @@ def verificarCliente(buscarCliente):
 
     return existeCliente
 
-def actualizarSaldo(cliente, monto, sumar = True):
+# Sumar
+# True = Recibo
+# False = Factura
+def actualizarSaldo(cliente, monto, factura = True):
     cargarLista(clientesCargados)
 
     try:
@@ -206,12 +210,12 @@ def actualizarSaldo(cliente, monto, sumar = True):
         saldoCliente = saldos[indiceCliente]
 
         # Tenemos que sumar un monto o restarlo?
-        if (sumar == True):
-            # Sumamos el monto al saldo actual
-            saldoCliente = saldoCliente  + monto
-        else:
-            # No hay que sumar, tenemos que restar
+        if (factura == True):
+            # Restamos el monto al saldo actual ya que una factura es saldo negativo
             saldoCliente = saldoCliente - monto
+        else:
+            # No hay que restar, tenemos que sumar porque un recibo es saldo positivo
+            saldoCliente = saldoCliente + monto
 
         # Actualizamos el saldo del cliente en la lista de saldos
         saldos[indiceCliente] = saldoCliente
@@ -228,3 +232,15 @@ def actualizarSaldo(cliente, monto, sumar = True):
                 archivoCliente.write(str(clientes[i]) + ";" + str(saldos[i]) + "\n")
 
             archivoCliente.close()
+
+def cantidadClientes():
+    cargarLista(clientesCargados)
+
+    # Devolvemos la cantidad de registros en la lista de clientes
+    return len(clientes)
+
+def listaClientes():
+    cargarLista(clientesCargados)
+
+    # Devolvemos la lista de clientes
+    return clientes

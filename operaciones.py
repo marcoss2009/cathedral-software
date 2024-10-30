@@ -1,7 +1,7 @@
 from terminal import limpiarTerminal
 from tablas import crearTabla
-from clientes import verificarCliente
-from vendedores import verificarVendedor
+from clientes import verificarCliente, cantidadClientes, listaClientes, actualizarSaldo
+from vendedores import verificarVendedor, obtenerVendedores
 from random import randint
 
 def cargarOpereacion(cliente, vendedor, operacion, monto):
@@ -14,7 +14,10 @@ def cargarOpereacion(cliente, vendedor, operacion, monto):
     except IOError:
         print("ERROR al abrir el archivo de operaciones")
     else:
-        archivoOperaciones.write(str(cliente) + ";" + vendedor + ";" + str(operacion) + ";" + str(monto) + "\n")
+        archivoOperaciones.write(str(cliente) + ";" + str(vendedor) + ";" + str(operacion) + ";" + str(monto) + "\n")
+
+        # Actualizamos el saldo del cliente
+        actualizarSaldo(cliente, monto, operacion)
         archivoOperaciones.close()
 
 def leerOperaciones(busqueda = "operacion", filtro = 0):
@@ -59,141 +62,21 @@ def cargaOperaciones():
     limpiarTerminal()
 
     print(" Carga de Operaciones ".center(80,'-'))
+    
+    # Tenemos suficiente cantidad de clientes para comenzar a cargar operaciones?
+    if (cantidadClientes() <= 0):
+        print(" No hay suficiente cantidad de clientes para cargar una operación. ".center(80,'-'))
+    else:
+        '''''
+        Solicitamos el Número de Cliente
+        Creamos una excpción si el usuario ingresa algo distinto a un número
+        Luego tendremos que verificar si este cliente existe con ayuda de alguna función del módulo de Clientes para tal fin
 
-    '''''
-    Solicitamos el Número de Cliente
-    Creamos una excpción si el usuario ingresa algo distinto a un número
-    Luego tendremos que verificar si este cliente existe con ayuda de alguna función del módulo de Clientes para tal fin
-
-    Al igual que en el menú, cliente va a valer cero hasta que el cliente ingresado sea válido
-    '''''
-    cliente = 0
-    while(cliente == 0):
-        try:
-            cliente = int(input("Ingrese el Número de Cliente: "))
-        except ValueError:
-            print('ERROR: El Número de Cliente solo puede contener números')
-        else:
-            '''''
-            Verificamos si el cliente existe
-            Si el cliente no existe entoncés su valor vuelve a ser 0
-            y volvemos a pedir el cliente infinitamente hasta que ingrese un cliente válido
-            '''''
-            if verificarCliente(cliente) == False:
-                print('ERROR: El Cliente ingresado no existe')
-                cliente = 0
-
-    '''''
-    Solicitamos el Vendedor
-    No necesitaremos una excepción debido a que el vendedor es un valor string
-    Luego tendremos que verificar si este vendedor existe con ayuda de alguna función del módulo de Vendedores para tal fin
-
-    Al igual que en el menú, vendedor va a valer cero hasta que el vendedor ingresado sea válido
-    '''''
-    vendedor = 0
-    while(vendedor == 0):
-        try:
-            vendedor = int(input("Ingrese el Número de Vendedor: "))
-        except ValueError:
-            print('ERROR: El Número de Vendedor solo puede contener números')
-        else:
-            '''''
-            Verificamos si el vendedor existe
-            Si el vendedor no existe entoncés su valor vuelve a ser 0
-            y volvemos a pedir el vendedor infinitamente hasta que ingrese un vendedor válido
-            '''''
-            if verificarVendedor(vendedor) == False:
-                print('ERROR: El Vendedor ingresado no existe')
-                vendedor = 0
-        
-    '''''
-    Solicitamos el Tipo de Operación
-    Creamos una excpción si el usuario ingresa algo distinto a un número
-    Luego tendremos que verificar si el valor es 0 o 1
-    '''''
-    operacion = -1
-    while (operacion == -1):
-        try:
-            operacion = int(input("Ingrese 0 si es Recibo o 1 si es Factura: "))
-        except ValueError:
-            print('ERROR: El Tipo de Operación debe ser un número')
-        else:
-            if operacion < 0 or operacion > 1:
-                print('ERROR: El Tipo de Operación debe ser 0 para Recibo o 1 para Factura')
-                operacion = -1
-
-    '''''
-    Solicitamos el Monto de Operación
-    Creamos una excpción si el usuario ingresa algo distinto a un número
-    Luego tendremos que verificar si el monto es mayor a cero
-    '''''
-    monto = 0
-    while (monto == 0):
-        try:
-            monto  = int(input("Ingrese Monto de Operación: "))
-        except ValueError:
-            print('ERROR: El Monto de Operación debe ser un número')
-        else:
-            if (monto <= 0):
-                print('ERROR: El Monto de Operación debe ser mayor a cero')
-                monto = 0
-
-    '''''
-    La operación fue Cargada de Forma Exitosa
-    Lo guardamos en el archivo y seguimos
-    '''''
-    cargarOpereacion(cliente, vendedor, operacion, monto)
-
-def reporteFacturasRecibos():
-    # Limpiamos la terminal
-    limpiarTerminal()
-
-    print(" Informe de Movimientos por Facturas y Recibos ".center(80,'-'))
-    filtro = -1
-    while (filtro == -1):
-        try:
-            filtro = int(input("Ingrese 0 para Recibos o 1 para Facturas: "))
-        except ValueError:
-            print("ERROR: El valor debe ser 0 para Recibos o 1 para Facturas")
-        else:
-            if filtro < 0 or filtro > 1:
-                print("ERROR: El valor ingresado es incorrecto.")
-                filtro = -1
-
-    # Ahora vamos a leer todos los registros que cumplan con esta condición
-    leerOperaciones("operacion", filtro)
-
-    # Leemos cualquier tecla para volver al menú principal
-    input("Presione Enter tecla para continuar...")
-
-def reporteClienteVendedor():
-    # Limpiamos la terminal
-    limpiarTerminal()
-
-    print(" Informe de Movimientos filtrados por Cliente y Vendedor ".center(80,'-'))
-    filtro = -1
-    while (filtro == -1):
-        try:
-            filtro = int(input("Ingrese 0 para filtrar por Cliente o 1 para filtrar por Vendedor: "))
-        except ValueError:
-            print("ERROR: El valor debe ser 0 para Cliente o 1 para Vendedor")
-        else:
-            if filtro < 0 or filtro > 1:
-                print("ERROR: El valor ingresado es incorrecto.")
-                filtro = -1
-
-    '''''
-    Wait a minute...
-    Esto no termina acá lamentablamente...
-    Ahora tenemos que verificar si el vendedor o cliente existe
-    antes de empezar a filtrar los registros
-    '''''
-    valorBuscar = -1
-    while valorBuscar == -1:
-        if (filtro == 0):
-            # Filtramos por Cliente
+        Al igual que en el menú, cliente va a valer cero hasta que el cliente ingresado sea válido
+        '''''
+        while(True):
             try:
-                valorBuscar = int(input("Ingrese el Código del Cliente para filtrar: "))
+                cliente = int(input("Ingrese el Número de Cliente: "))
             except ValueError:
                 print('ERROR: El Número de Cliente solo puede contener números')
             else:
@@ -202,30 +85,169 @@ def reporteClienteVendedor():
                 Si el cliente no existe entoncés su valor vuelve a ser 0
                 y volvemos a pedir el cliente infinitamente hasta que ingrese un cliente válido
                 '''''
-                if verificarCliente(valorBuscar) == False:
+                if verificarCliente(cliente) == False:
                     print('ERROR: El Cliente ingresado no existe')
-                    valorBuscar = 0
-        else:
-            # Filtramos por Vendedor
+                else:
+                    # El cliente existe, rompemos el ciclo y continuamos con la operación
+                    break;
+
+        '''''
+        Solicitamos el Vendedor
+        No necesitaremos una excepción debido a que el vendedor es un valor string
+        Luego tendremos que verificar si este vendedor existe con ayuda de alguna función del módulo de Vendedores para tal fin
+
+        Al igual que en el menú, vendedor va a valer cero hasta que el vendedor ingresado sea válido
+        '''''
+        vendedor = 0
+        while(vendedor == 0):
             try:
-                valorBuscar = int(input("Ingrese el Código de Vendedor para filtrar: "))
+                vendedor = int(input("Ingrese el Número de Vendedor: "))
             except ValueError:
-                print('ERROR: El Código de Vendedor solo puede contener números')
+                print('ERROR: El Número de Vendedor solo puede contener números')
             else:
                 '''''
                 Verificamos si el vendedor existe
                 Si el vendedor no existe entoncés su valor vuelve a ser 0
                 y volvemos a pedir el vendedor infinitamente hasta que ingrese un vendedor válido
                 '''''
-                if verificarVendedor(valorBuscar) == False:
+                if verificarVendedor(vendedor) == False:
                     print('ERROR: El Vendedor ingresado no existe')
-                    valorBuscar = 0
+                    vendedor = 0
+            
+        '''''
+        Solicitamos el Tipo de Operación
+        Creamos una excpción si el usuario ingresa algo distinto a un número
+        Luego tendremos que verificar si el valor es 0 o 1
+        '''''
+        operacion = -1
+        while (operacion == -1):
+            try:
+                operacion = int(input("Ingrese 0 si es Recibo o 1 si es Factura: "))
+            except ValueError:
+                print('ERROR: El Tipo de Operación debe ser un número')
+            else:
+                if operacion < 0 or operacion > 1:
+                    print('ERROR: El Tipo de Operación debe ser 0 para Recibo o 1 para Factura')
+                    operacion = -1
+
+        '''''
+        Solicitamos el Monto de Operación
+        Creamos una excpción si el usuario ingresa algo distinto a un número
+        Luego tendremos que verificar si el monto es mayor a cero
+        '''''
+        monto = 0
+        while (monto == 0):
+            try:
+                monto  = int(input("Ingrese Monto de Operación: "))
+            except ValueError:
+                print('ERROR: El Monto de Operación debe ser un número')
+            else:
+                if (monto <= 0):
+                    print('ERROR: El Monto de Operación debe ser mayor a cero')
+                    monto = 0
+
+        '''''
+        La operación fue Cargada de Forma Exitosa
+        Lo guardamos en el archivo y seguimos
+        '''''
+        cargarOpereacion(cliente, vendedor, operacion, monto)
+        print(" Operación cargada exitosamente ".center(80,'-'))
+
+    input("Presione Enter para continuar...")
+
+def reporteFacturasRecibos():
+    # Limpiamos la terminal
+    limpiarTerminal()
+
+    print(" Informe de Movimientos por Facturas y Recibos ".center(80,'-'))
+
+    while (True):
+        try:
+            filtro = int(input("Ingrese 0 para Recibos o 1 para Facturas: "))
+        except ValueError:
+            print("ERROR: El valor debe ser 0 para Recibos o 1 para Facturas")
+        else:
+            if filtro < 0 or filtro > 1:
+                print("ERROR: El valor ingresado es incorrecto.")
+            else:
+                # El filtro es correcto, rompemos el ciclo y continuamos
+                break;
 
     # Ahora vamos a leer todos los registros que cumplan con esta condición
-    leerOperaciones("vendedor" if bool(filtro) == True else "cliente", valorBuscar)
+    leerOperaciones("operacion", filtro)
 
     # Leemos cualquier tecla para volver al menú principal
-    input("Presione Enter tecla para continuar...")
+    input("Presione Enter para continuar...")
+
+def reporteClienteVendedor():
+    # Limpiamos la terminal
+    limpiarTerminal()
+
+    print(" Informe de Movimientos filtrados por Cliente y Vendedor ".center(80,'-'))
+    
+    # Hay suficiente cantidad de operaciones para mostrar estos datos?
+    if (cantidadOperaciones() <= 0):
+        print(" No hay suficiente cantidad de datos para ejecutar esta operación. ".center(80,'-'))
+    else:
+        while (True):
+            try:
+                filtro = int(input("Ingrese 0 para filtrar por Cliente o 1 para filtrar por Vendedor: "))
+            except ValueError:
+                print("ERROR: El valor debe ser 0 para Cliente o 1 para Vendedor")
+            else:
+                if filtro < 0 or filtro > 1:
+                    print("ERROR: El valor ingresado es incorrecto.")
+                else:
+                    # El filtro es correcto, rompemos el ciclo y continuamos
+                    break;
+
+        '''''
+        Wait a minute...
+        Esto no termina acá lamentablamente...
+        Ahora tenemos que verificar si el vendedor o cliente existe
+        antes de empezar a filtrar los registros
+        '''''
+        while True:
+            if (filtro == 0):
+                # Filtramos por Cliente
+                try:
+                    valorBuscar = int(input("Ingrese el Código del Cliente para filtrar: "))
+                except ValueError:
+                    print('ERROR: El Número de Cliente solo puede contener números')
+                else:
+                    '''''
+                    Verificamos si el cliente existe
+                    Si el cliente no existe entoncés su valor vuelve a ser 0
+                    y volvemos a pedir el cliente infinitamente hasta que ingrese un cliente válido
+                    '''''
+                    if verificarCliente(valorBuscar) == False:
+                        print('ERROR: El Cliente ingresado no existe')
+                    else:
+                        # El cliente existe, rompemos el ciclo y continuamos
+                        break;
+            else:
+                # Filtramos por Vendedor
+                try:
+                    valorBuscar = int(input("Ingrese el Código de Vendedor para filtrar: "))
+                except ValueError:
+                    print('ERROR: El Código de Vendedor solo puede contener números')
+                else:
+                    '''''
+                    Verificamos si el vendedor existe
+                    Si el vendedor no existe entoncés su valor vuelve a ser 0
+                    y volvemos a pedir el vendedor infinitamente hasta que ingrese un vendedor válido
+                    '''''
+                    if verificarVendedor(valorBuscar) == False:
+                        print('ERROR: El Vendedor ingresado no existe')
+                    else:
+                        # El vendedor existe, rompemos el ciclo y continuamos...
+                        break;
+
+        # Ahora vamos a leer todos los registros que cumplan con esta condición
+        leerOperaciones("vendedor" if bool(filtro) == True else "cliente", valorBuscar)
+
+    # Leemos cualquier tecla para volver al menú principal
+    input("Presione Enter para continuar...")
 
 def generarOperacionesRandom():
     # Limpiamos la terminal
@@ -233,9 +255,36 @@ def generarOperacionesRandom():
 
     print(" Generar Operaciones al Azar ".center(80,'-'))
 
-    cantidadOperaciones = randint(2, 20)
+    # Obtener un número entre 1 y 20 para generar x cantidad de operaciones
+    cantidadOperaciones = randint(1, 20)
 
-    print(f"Se han generado {cantidadOperaciones} de operaciones al azar")
+    # Perfecto, lo que necesitamos para generar una operación son los siguientes parámetros
+    # Clientes, Vendedores, Tipo de Operacion y Monto
+    # Lo repetimos la cantidad de veces que obtuvimos arriba
+
+    # Obtenemos la lista de clientes
+    clientes = listaClientes()
+    
+    # Obtenemos la lista de vendedores
+    vendedores = obtenerVendedores()
+
+    for i in range(cantidadOperaciones):
+        # Tomamos el índice de un cliente al azar
+        clienteRandom = randint(0,len(clientes) - 1)
+
+        # Tomamos el índice de un vendedor al azar
+        vendedorRandom = randint(0, len(vendedores) - 1)
+
+        # Vamos a determinar si esto va a ser una factura o un recibo
+        tipoOperacion = randint(0, 1)
+
+        # Por último tomamos un monto random, preferentemente de 4 dígitos
+        montoOperacion = randint(1000, 9999)
+
+        # Perfecto, cargamos la operacion
+        cargarOpereacion(clientes[clienteRandom], vendedores[vendedorRandom], tipoOperacion, montoOperacion)
+
+    print(f" Se han generado {cantidadOperaciones} de operaciones al azar ".center(80, '-'))
     input("Presione Enter para continuar...")
 
 def cuentaCorriente():
@@ -245,8 +294,7 @@ def cuentaCorriente():
     print(" Vista de Cuenta Corriente por Cliente ".center(80,'-'))
 
     # Vamos a solicitar un cliente
-    clienteBuscar = 0
-    while clienteBuscar == 0:
+    while True:
         try:
             clienteBuscar = int(input("Ingrese el Número de Cliente para consultar: "))
         except ValueError:
@@ -254,7 +302,10 @@ def cuentaCorriente():
         else:
             # Verificamos si el cliente existe
             if (verificarCliente(clienteBuscar) == False):
-                clienteBuscar = 0
+                print("El cliente ingresado no existe.")
+            else:
+                # El cliente existe, rompemos el ciclo y continuamos
+                break;
 
     # Seteamos la tabla
     columnasMovimientos = ["Movimiento", "Debe", "Haber"]
@@ -302,7 +353,7 @@ def cuentaCorriente():
     
     # Creamos la Tabla
     crearTabla(columnasMovimientos, filasMovimientos)
-    input("Presione Enter tecla para continuar...")
+    input("Presione Enter para continuar...")
 
 '''''
 Función para ser consumida por el resto de los módulos
@@ -345,3 +396,115 @@ def calcularSaldoFinal(clienteBuscar):
     # El saldo final de un cliente es el resultado de la resta
     # haber - debe
     return haber - debe
+
+'''''
+Función de uso interno para no mostrar reportes si no hay operaciones.
+Además puede ser utilizado en el futuro con otros fines.
+
+Al principio sólo pensé utilizarla para saber si hay una operación
+devolviendo True a la lectura del primer registro y rompiendo el ciclo
+pero me pareció útil tener un contador total de operaciones por si
+a futuro lo necesitamos.
+'''''
+def cantidadOperaciones():
+    cantidadOperaciones = 0
+
+    '''''
+    Nombre del archivo: operaciones.csv
+    Entramos al archivo EN MODO LECTURA
+    '''''
+    try:
+        archivoOperaciones = open(r"operaciones.csv", "rt")
+    except IOError:
+        print("ERROR al abrir el archivo de operaciones")
+    else:
+        try:
+            # Leemos el archivo
+            linea = archivoOperaciones.readline()
+            
+            while linea:
+                cantidadOperaciones = cantidadOperaciones + 1
+
+                # Leemos la próxima línea
+                linea = archivoOperaciones.readline()
+        finally:            
+            archivoOperaciones.close()
+
+    return cantidadOperaciones
+
+'''''
+El total operativo es el cierre de caja
+La diferencia entre el haber y el debe global (osea no solo de un cliente en especifico)
+'''''
+def totalOperativo():
+    # Limpiamos la terminal 
+    limpiarTerminal()
+
+    print(" Total Operativo ".center(80,'-'))
+
+    # Vamos a guardar cada monto en esta lista
+    montoOperaciones = []
+
+    # Leemos el archivo
+    '''''
+    Nombre del archivo: operaciones.csv
+    Entramos al archivo EN MODO LECTURA
+    '''''
+    try:
+        archivoOperaciones = open(r"operaciones.csv", "rt")
+    except IOError:
+        print("ERROR al abrir el archivo de operaciones")
+    else:
+        try:
+            # Leemos el archivo
+            linea = archivoOperaciones.readline()
+            
+            while linea:
+                cliente, vendedor, operacion, monto = linea.split(";")
+
+                # Re-asignamos el valor de operación a tipo booleano
+                operacion = bool(int(operacion))
+
+                # Recordemos, si es una factura el saldo es negativo
+                # Si es un recibo el saldo es positivo
+                if (operacion == True):
+                    # Es una factura, entonces lo convertimos a negativo
+                    monto = int(monto) * -1
+                else:
+                    monto = int(monto)
+
+                # Hacemos append a la lista montoOperaciones
+                montoOperaciones.append(monto)
+
+                # Leemos la próxima línea
+                linea = archivoOperaciones.readline()
+        finally:            
+            archivoOperaciones.close()
+
+    # Perfecto, ahora debemos sumar todos los elementos para obtener el resultado operativo
+    total = calcularOperativo(montoOperaciones)
+
+    columnas = ["Total del Saldo Operativo"]
+    filas = [["$" + str(total)]]
+
+    # Lo mostramos de forma más linda como una tabla de una sola columna y una sola fila
+    crearTabla(columnas, filas)
+
+    input("Presione Enter para continuar...")
+
+'''''
+Necesitamos una función recursiva
+Realmente es la única que se nos ocurrió
+Lo debatimos durante horas
+Qué sea lo que Dios quiera...
+
+Enviamos la lista que contiene todos los montos
+'''''
+def calcularOperativo(lista):
+    # Sumo los elementos de una lista de forma recursiva
+    if len(lista) == 0:
+        return 0
+    else:
+        # Con "1:"" lo que hacemos es ignorar el elemento actual y pasar al siguiente
+        # Referencia: Página 23 de la PPT de Funciones Recursivas
+        return lista[0] + calcularOperativo(lista[1:])
