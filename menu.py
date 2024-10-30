@@ -33,9 +33,7 @@ def selectMainMenu():
     print("4. Reportes")
     print("5. Salir del Sistema")
 
-    
-    opcion = 0 # Preguntar a la profe si esta aberración está bien para evitar utilizar else...
-    while opcion == 0:
+    while True:
         # Manejo de Excepciones
         # Solo podemos ingresar números...
         try:
@@ -43,8 +41,9 @@ def selectMainMenu():
         except ValueError: # El usuario ingresó algo distinto a un número, mostramos el error y continuamos
             print('La opción para comenzar debe ser un número.')
         else:
-            if (opcion < 1 or opcion > 5):
-                opcion = 0
+            if (opcion >= 1 and opcion <= 5):
+                # La opción está entre 1 y 5, rompemos el ciclo y continuamos
+                break;
 
     return opcion
 
@@ -59,10 +58,17 @@ def menuClientes():
     print("3. Generar Clientes al Azar")
     print("4. Volver al Menú Principal")
 
-    opcion = int(input("Seleccione una opción: "))
-
-    while (opcion < 1 or opcion > 4):
-        opcion = int(input("Seleccione una opción: "))
+    while True:
+        # Manejo de Excepciones
+        # Solo podemos ingresar números...
+        try:
+            opcion = int(input("Seleccione una opción: "))
+        except ValueError: # El usuario ingresó algo distinto a un número, mostramos el error y continuamos
+            print('La opción para comenzar debe ser un número.')
+        else:
+            if (opcion >= 1 and opcion <= 4):
+                # La opción está entre 1 y 4, rompemos el ciclo y continuamos
+                break;
 
     if opcion == 1:
         clientes.cargaClientes()
@@ -84,10 +90,17 @@ def menuVendedores():
     print("1. Cuentas Corrientes por Vendedor")
     print("2. Volver al Menú Principal")
 
-    opcion = int(input("Seleccione una opción: "))
-
-    while (opcion < 1 or opcion > 2):
-        opcion = int(input("Seleccione una opción: "))
+    while True:
+        # Manejo de Excepciones
+        # Solo podemos ingresar números...
+        try:
+            opcion = int(input("Seleccione una opción: "))
+        except ValueError: # El usuario ingresó algo distinto a un número, mostramos el error y continuamos
+            print('La opción para comenzar debe ser un número.')
+        else:
+            if (opcion >= 1 and opcion <= 2):
+                # La opción está entre 1 y 2, rompemos el ciclo y continuamos
+                break;
 
     if opcion == 1:
         vendedores.cuentasCorrientesVendedor()
@@ -104,10 +117,17 @@ def menuOperaciones():
     print("2. Generar Operaciones al Azar")
     print("3. Volver al Menú Principal")
 
-    opcion = int(input("Seleccione una opción: "))
-
-    while (opcion < 1 or opcion > 3):
-        opcion = int(input("Seleccione una opción: "))
+    while True:
+        # Manejo de Excepciones
+        # Solo podemos ingresar números...
+        try:
+            opcion = int(input("Seleccione una opción: "))
+        except ValueError: # El usuario ingresó algo distinto a un número, mostramos el error y continuamos
+            print('La opción para comenzar debe ser un número.')
+        else:
+            if (opcion >= 1 and opcion <= 3):
+                # La opción está entre 1 y 3, rompemos el ciclo y continuamos
+                break;
 
     if opcion == 1:
         operaciones.cargaOperaciones()
@@ -129,12 +149,20 @@ def menuReportes():
     print("4. Informe de Movimientos filtrados por Facturas y Recibos")
     print("5. Informe de Movimientos filtrados por Cliente y Vendedor")
     print("6. Vista de Cuenta Corriente por Cliente")
-    print("7. Volver al Menú Principal")
+    print("7. Calcular el Total Operativo")
+    print("8. Volver al Menú Principal")
 
-    opcion = int(input("Seleccione una opción: "))
-
-    while (opcion < 1 or opcion > 7):
-        opcion = int(input("Seleccione una opción: "))
+    while True:
+        # Manejo de Excepciones
+        # Solo podemos ingresar números...
+        try:
+            opcion = int(input("Seleccione una opción: "))
+        except ValueError: # El usuario ingresó algo distinto a un número, mostramos el error y continuamos
+            print('La opción para comenzar debe ser un número.')
+        else:
+            if (opcion >= 1 and opcion <= 8):
+                # La opción está entre 1 y 8, rompemos el ciclo y continuamos
+                break;
 
     if opcion == 1:
         vendedores.vendedorConMasVentas()
@@ -153,5 +181,8 @@ def menuReportes():
 
     if opcion == 6:
         operaciones.cuentaCorriente()
+    
+    if opcion == 7:
+        operaciones.totalOperativo()
     
     mainMenu()

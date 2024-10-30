@@ -142,3 +142,10 @@ def traerVendedores():
     return cuentas
 
                     
+def obtenerVendedores():
+    vendedores = []
+
+    for x in cuentas:
+        vendedores.append(int(x))
+
+    return vendedores
