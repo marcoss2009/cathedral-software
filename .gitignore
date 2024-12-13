@@ -2,3 +2,9 @@ __pycache__/
 prueba.py
 test.py
 prueba.txt
+clientes.csv
+operaciones.csv
+*.csv
+reportes/*
+!reportes/.gitkeep
+ejemplo.txt
