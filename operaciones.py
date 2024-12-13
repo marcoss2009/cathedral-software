@@ -1,9 +1,9 @@
 from terminal import limpiarTerminal
 from tablas import crearTabla
 from clientes import verificarCliente, cantidadClientes, obtenerClientes, actualizarSaldo
-from vendedores import verificarVendedor, obtenerVendedores
 from random import randint
 from reportes import generarReporte
+from vendedores import verificarVendedor
 
 def cargarOpereacion(cliente, vendedor, operacion, monto):
     '''''
@@ -55,23 +55,25 @@ def leerOperaciones(busqueda = "operacion", filtro = 0):
         finally:        
             archivoOperaciones.close()
 
-    # Generamos el archivo de reporte
-    if busqueda == "operacion":
-        nombreArchivo = "operaciones_facturas" if bool(filtro) == True else "operaciones_recibos"
-    elif busqueda == "cliente":
-        nombreArchivo = "operaciones_cliente_" + str(filtro)
-    elif busqueda == "vendedor":
-        nombreArchivo = "operaciones_vendedor_" + str(filtro)
+    # Solo generamos el archivo si tiene datos para ser generado
+    if (len(datosReporte) > 0):
+        # Generamos el archivo de reporte
+        if busqueda == "operacion":
+            nombreArchivo = "operaciones_facturas" if bool(filtro) == True else "operaciones_recibos"
+        elif busqueda == "cliente":
+            nombreArchivo = "operaciones_cliente_" + str(filtro)
+        elif busqueda == "vendedor":
+            nombreArchivo = "operaciones_vendedor_" + str(filtro)
 
-    # Generamos el archivo
-    generarReporte(datosReporte, nombreArchivo)
+        # Generamos el archivo
+        generarReporte(datosReporte, nombreArchivo)
     
     # Creamos la Tabla
     # Primero definimos el nombre de las columnas
     columnasOperaciones = ["Cliente", "Vendedor", "Tipo de Operación", "Monto"]
     crearTabla(columnasOperaciones, filas)
 
-def cargaOperaciones():
+def cargaOperaciones(cuentas):
     # Limpiamos la terminal
     limpiarTerminal()
 
@@ -124,7 +126,7 @@ def cargaOperaciones():
                 Si el vendedor no existe entoncés su valor vuelve a ser 0
                 y volvemos a pedir el vendedor infinitamente hasta que ingrese un vendedor válido
                 '''''
-                if verificarVendedor(vendedor) == False:
+                if verificarVendedor(vendedor, cuentas) == False:
                     print('ERROR: El Vendedor ingresado no existe')
                     vendedor = 0
             
@@ -193,7 +195,7 @@ def reporteFacturasRecibos():
     # Leemos cualquier tecla para volver al menú principal
     input("Presione Enter para continuar...")
 
-def reporteClienteVendedor():
+def reporteClienteVendedor(cuentas):
     # Limpiamos la terminal
     limpiarTerminal()
 
@@ -251,7 +253,7 @@ def reporteClienteVendedor():
                     Si el vendedor no existe entoncés su valor vuelve a ser 0
                     y volvemos a pedir el vendedor infinitamente hasta que ingrese un vendedor válido
                     '''''
-                    if verificarVendedor(valorBuscar) == False:
+                    if verificarVendedor(valorBuscar, cuentas) == False:
                         print('ERROR: El Vendedor ingresado no existe')
                     else:
                         # El vendedor existe, rompemos el ciclo y continuamos...
@@ -263,7 +265,7 @@ def reporteClienteVendedor():
     # Leemos cualquier tecla para volver al menú principal
     input("Presione Enter para continuar...")
 
-def generarOperacionesRandom():
+def generarOperacionesRandom(cuentas):
     # Limpiamos la terminal
     limpiarTerminal()
 
@@ -284,7 +286,8 @@ def generarOperacionesRandom():
         # Lo repetimos la cantidad de veces que obtuvimos arriba
         
         # Obtenemos la lista de vendedores
-        vendedores = obtenerVendedores()
+        # Referencia: Página 30 de la PPT de la clase 10 (conjuntos)
+        vendedores = list(cuentas)
 
         for i in range(cantidadOperaciones):
             # Tomamos el índice de un cliente al azar

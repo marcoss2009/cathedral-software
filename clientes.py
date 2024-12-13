@@ -24,6 +24,9 @@ def cargaClientes():
                 break;
     
     guardarCliente(numeroCliente)
+    print(" Cliente cargado correctamente ".center(80,'-'))
+
+    input("Presione una tecla para continuar...")
 
 def guardarCliente(numeroCliente):
     # Guardar en Archivo
@@ -107,7 +110,8 @@ def clientesCompras():
         crearTabla(columnas, filas)
 
         # Generamos el archivo de reporte
-        generarReporte(datosReporte, "clientes_compras")
+        if (len(datosReporte) > 0):
+            generarReporte(datosReporte, "clientes_compras")
     else:
         print("No hay suficientes datos para mostrar.")
 
@@ -118,7 +122,11 @@ def clientesDeudores():
     print(" Cliente/s más deudor/es ".center(80,'-'))
 
     # Obtenemos la lista de clientes
-    clientes = obtenerClientes()
+    clientes, saldos = obtenerClientesSaldos()
+
+    # Guardamos solo los clientes deudores en otra lista
+    clientesDeuda = []
+    saldosDeuda = []
 
     columnas = ["Cliente", "Saldo"]
     filas = []
@@ -126,18 +134,32 @@ def clientesDeudores():
 
     # Recorremos la lista de clientes y consultamos su deuda
     for i in range(len(clientes)):
-        # Obtener el saldo del cliente "i"
-        clienteSaldo = saldoCliente(clientes[i])
+        if (saldos[i] < 0):
+            clientesDeuda.append(clientes[i])
+            saldosDeuda.append(saldos[i])
 
-        if (clienteSaldo < 0):
-            filas.append([clientes[i], "$" + str(clienteSaldo)])
-            datosReporte.append(str(clientes[i]) + ";" + str(clienteSaldo))
+    # Perfecto, empaquetamos para luego ordenar
+    totalesDeudores = [(saldosDeuda[i], clientesDeuda[i]) for i in range(len(saldosDeuda))]
+
+    # Ordenamos de mayor a menor por monto de operación
+    # CUIDADO: no usar reverse porque estamos ordenando números negativos
+    totalesDeudores.sort()
+
+    # Separar los valores en dos listas
+    clientesOrdenados = [tupla[1] for tupla in totalesDeudores]
+    saldosOrdenados = [tupla[0] for tupla in totalesDeudores]
+
+    # Iteramos y generamos las filas para la tabla y el reporte
+    for i in range(len(clientesOrdenados)):
+        filas.append([clientesOrdenados[i], "$" + str(saldosOrdenados[i])])
+        datosReporte.append(str(clientesOrdenados[i]) + ";" + str(saldosOrdenados[i]))
 
     # Mostramos en Tabla
     crearTabla(columnas, filas)
 
     # Generamos el archivo de reporte
-    generarReporte(datosReporte, "clientes_deudores")
+    if (len(datosReporte) > 0):
+        generarReporte(datosReporte, "clientes_deudores")
 
     input("Presione Enter para continuar...")
 

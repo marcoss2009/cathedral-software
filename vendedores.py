@@ -2,15 +2,7 @@ from tablas import crearTabla
 from terminal import limpiarTerminal
 from reportes import generarReporte
 
-cuentas = {
-    "1000": 1234,
-    "1001": 2345,
-    "1002": 3456,
-    "1003": 4567,
-    "1004": 5678
-}
-
-def cuentasCorrientesVendedor():#chequear como recibo la lista de vendedores
+def cuentasCorrientesVendedor(cuentas):#chequear como recibo la lista de vendedores
     limpiarTerminal()
     
     print(" Cuentas Corrientes por Vendedor ".center(80, '-'))
@@ -85,7 +77,7 @@ def cuentasCorrientesVendedor():#chequear como recibo la lista de vendedores
     finally:
         archivo.close()
         
-    input("Presione enter para continuar...")
+    input("Presione Enter para continuar...")
         
 def ventasVendedores():
     limpiarTerminal()
@@ -117,10 +109,7 @@ def ventasVendedores():
                 else:
                     indiceVendedor = ventasVendedores.index(vendedor)
                     if operacion == 1:
-                        mayorSaldo[indiceVendedor] = mayorSaldo[indiceVendedor] + monto   
-                
-                #mayorVendedor = max(mayorSaldo)
-                #indiceMayorVendedor = mayorSaldo.index(mayorVendedor)
+                        mayorSaldo[indiceVendedor] = mayorSaldo[indiceVendedor] + monto
         finally:
             archivo.close()
             
@@ -156,23 +145,8 @@ def ventasVendedores():
         else:
             print("No se encontraron datos de ventas.")
             
-    input("Presione enter para continuar...")
-            
-            
+    input("Presione Enter para continuar...")
 
 #funcion lambda para verificar que el vendedor existe. 
 #habria que corregir que reciba por parametro la lista de vendedores    
-verificarVendedor = lambda buscado: True if str(buscado) in cuentas else False
-    
-
-def traerVendedores():
-    return cuentas
-
-                    
-def obtenerVendedores():
-    vendedores = []
-
-    for x in cuentas:
-        vendedores.append(int(x))
-
-    return vendedores
+verificarVendedor = lambda buscado, cuentas: True if str(buscado) in cuentas else False

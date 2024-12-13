@@ -3,20 +3,20 @@ import vendedores
 import operaciones
 from terminal import limpiarTerminal
 
-def mainMenu():
+def mainMenu(cuentas):
     opcion = selectMainMenu()
 
     if (opcion == 1):
-        menuClientes()
+        menuClientes(cuentas)
 
     if (opcion == 2):
-        menuVendedores()
+        menuVendedores(cuentas)
 
     if (opcion == 3):
-        menuOperaciones()
+        menuOperaciones(cuentas)
 
     if (opcion == 4):
-        menuReportes()
+        menuReportes(cuentas)
 
     # Limpiamos la terminal
     limpiarTerminal()
@@ -47,7 +47,7 @@ def selectMainMenu():
 
     return opcion
 
-def menuClientes():
+def menuClientes(cuentas):
     # Limpiamos la terminal
     limpiarTerminal()
 
@@ -79,9 +79,9 @@ def menuClientes():
     if opcion == 3:
         clientes.generarClientesRandom()
 
-    mainMenu()
+    mainMenu(cuentas)
 
-def menuVendedores():
+def menuVendedores(cuentas):
     # Limpiamos la terminal
     limpiarTerminal()
 
@@ -103,11 +103,11 @@ def menuVendedores():
                 break;
 
     if opcion == 1:
-        vendedores.cuentasCorrientesVendedor()
+        vendedores.cuentasCorrientesVendedor(cuentas)
     
-    mainMenu()
+    mainMenu(cuentas)
 
-def menuOperaciones():
+def menuOperaciones(cuentas):
     # Limpiamos la terminal
     limpiarTerminal()
 
@@ -130,14 +130,14 @@ def menuOperaciones():
                 break;
 
     if opcion == 1:
-        operaciones.cargaOperaciones()
+        operaciones.cargaOperaciones(cuentas)
 
     if opcion == 2:
         operaciones.generarOperacionesRandom()
     
-    mainMenu()
+    mainMenu(cuentas)
 
-def menuReportes():
+def menuReportes(cuentas):
     # Limpiamos la terminal
     limpiarTerminal()
 
@@ -145,7 +145,7 @@ def menuReportes():
     print(" Módulo de Reportes ".center(80,'-'))
     print("1. Totales de Ventas por Vendedor")
     print("2. Cantidad de Compras por Clientes")
-    print("3. Cliente/s más deudor/es")
+    print("3. Clientes Deudores")
     print("4. Informe de Movimientos filtrados por Facturas y Recibos")
     print("5. Informe de Movimientos filtrados por Cliente y Vendedor")
     print("6. Vista de Cuenta Corriente por Cliente")
@@ -177,7 +177,7 @@ def menuReportes():
         operaciones.reporteFacturasRecibos()
 
     if opcion == 5:
-        operaciones.reporteClienteVendedor()
+        operaciones.reporteClienteVendedor(cuentas)
 
     if opcion == 6:
         operaciones.cuentaCorriente()
@@ -185,4 +185,4 @@ def menuReportes():
     if opcion == 7:
         operaciones.totalOperativo()
     
-    mainMenu()
+    mainMenu(cuentas)
