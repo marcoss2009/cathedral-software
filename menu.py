@@ -143,8 +143,8 @@ def menuReportes():
 
     # Seleccione una opción
     print(" Módulo de Reportes ".center(80,'-'))
-    print("1. Vendedor con más Ventas")
-    print("2. Cliente con más Compras")
+    print("1. Totales de Ventas por Vendedor")
+    print("2. Cantidad de Compras por Clientes")
     print("3. Cliente/s más deudor/es")
     print("4. Informe de Movimientos filtrados por Facturas y Recibos")
     print("5. Informe de Movimientos filtrados por Cliente y Vendedor")
@@ -165,10 +165,10 @@ def menuReportes():
                 break;
 
     if opcion == 1:
-        vendedores.vendedorConMasVentas()
+        vendedores.ventasVendedores()
 
     if opcion == 2:
-        clientes.clienteMasCompras()
+        clientes.clientesCompras()
 
     if opcion == 3:
         clientes.clientesDeudores()
