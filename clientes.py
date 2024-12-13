@@ -119,7 +119,7 @@ def clientesCompras():
 
 def clientesDeudores():
     limpiarTerminal()
-    print(" Cliente/s más deudor/es ".center(80,'-'))
+    print(" Clientes Deudores ".center(80,'-'))
 
     # Obtenemos la lista de clientes
     clientes, saldos = obtenerClientesSaldos()
