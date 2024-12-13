@@ -8,3 +8,5 @@ operaciones.csv
 reportes/*
 !reportes/.gitkeep
 ejemplo.txt
+clientes.csv
+operaciones.csv
