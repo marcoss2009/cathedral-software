@@ -3,7 +3,7 @@ from tablas import crearTabla
 from clientes import verificarCliente, cantidadClientes, obtenerClientes, actualizarSaldo
 from vendedores import verificarVendedor, obtenerVendedores
 from random import randint
-import datetime
+from reportes import generarReporte
 
 def cargarOpereacion(cliente, vendedor, operacion, monto):
     '''''
@@ -21,45 +21,9 @@ def cargarOpereacion(cliente, vendedor, operacion, monto):
         actualizarSaldo(cliente, monto, operacion)
         archivoOperaciones.close()
 
-# Comprobar si un archivo existe
-def comprobarArchivo(nombreArchivo):
-    try:
-        archivo = open(r""+nombreArchivo, "rt")
-    except IOError:
-        existeArchivo = False
-    else:
-        # El archivo existe
-        existeArchivo = True
-
-        archivo.close()
-
-    return existeArchivo
-
-def generarArchivoReporte(datos = [], nombreReporte = "reporte"):
-    while True:
-        # Generamos le nombre del archivo
-        now = datetime.datetime.now()
-        archivoID = now.strftime("%Y_%m_%d-%H-%M-%S")
-        nombreArchivo = f"reportes/{nombreReporte}_{archivoID}.csv"
-        
-        # Si el archivo no existe rompemos el ciclo
-        if(comprobarArchivo(nombreArchivo) == False):
-            break;
-    
-    try:
-        archivoReportes = open(r""+nombreArchivo, "wt")
-    except IOError:
-        print("ERROR al abrir el archivo de reportes")
-    else:
-        for i in range(len(datos)):
-            archivoReportes.write(datos[i])
-            archivoReportes.write("\n")
-
-        archivoReportes.close()
-        
-
 def leerOperaciones(busqueda = "operacion", filtro = 0):
     filas = []
+    datosReporte = []
 
     '''''
     Nombre del archivo: operaciones.csv
@@ -85,10 +49,22 @@ def leerOperaciones(busqueda = "operacion", filtro = 0):
                     # y luego a texto nuevamente para poder concatenarlo con el símbolo "$"
                     filas.append([cliente, vendedor, ("Factura" if bool(int(operacion)) == True else "Recibo"), "$" + str(int(monto))])
 
+                    datosReporte.append(cliente + ";" + vendedor + ";" + operacion + ";" + str(int(monto))) # Le borramos el salto de línea a monto
                 # Leemos la próxima línea
                 linea = archivoOperaciones.readline()
         finally:        
             archivoOperaciones.close()
+
+    # Generamos el archivo de reporte
+    if busqueda == "operacion":
+        nombreArchivo = "operaciones_facturas" if bool(filtro) == True else "operaciones_recibos"
+    elif busqueda == "cliente":
+        nombreArchivo = "operaciones_cliente_" + str(filtro)
+    elif busqueda == "vendedor":
+        nombreArchivo = "operaciones_vendedor_" + str(filtro)
+
+    # Generamos el archivo
+    generarReporte(datosReporte, nombreArchivo)
     
     # Creamos la Tabla
     # Primero definimos el nombre de las columnas

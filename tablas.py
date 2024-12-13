@@ -1,4 +1,3 @@
-
 def crearTabla(columnas, filas, t_col = 36):
     # Imprimimos el primer renglón de "---" de la tabla
     print("-" * (t_col * len(columnas)))

@@ -1,4 +1,3 @@
-# Imports
 import login
 import menu
 from vendedores import traerVendedores

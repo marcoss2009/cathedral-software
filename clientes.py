@@ -2,6 +2,7 @@ import random
 from terminal import limpiarTerminal
 from tablas import crearTabla
 from operacionesExternas import obtenerOperacionesPorCliente
+from reportes import generarReporte
 
 def cargaClientes():
     limpiarTerminal()
@@ -63,37 +64,54 @@ def consultarCliente():
 
     input("Presione Enter para continuar")
 
-def clienteMasCompras():
+def clientesCompras():
     limpiarTerminal()
 
-    print(" Cliente con más Compras ".center(80,'-'))
-
-    # Variables acumuladoras
-    indiceMasCompras = 0
-    cantidadCompras = 0
+    print(" Cantidad de Compras por Cliente ".center(80,'-'))
 
     # Obtenemos la lista de clientes
     clientes = obtenerClientes()
+    operaciones = [] # Lista hermanada donde almacenaremos la cantidad de operaciones de cada cliente
 
-    # Recorremos la lista de clientes
-    for i in range(len(clientes)):
-        # Vamos a aprovechar la función en el módulo de operaciones
-        # para saber cuántas compras tiene el cliente actual
-        comprasCliente = obtenerOperacionesPorCliente(clientes[i], True)
+    # Inicializamos los parámetros para mostar una tabla
+    columnas = ["Cliente", "Cantidad de Compras"]
+    filas = []
+    datosReporte = []
+
+    # Iniciamos solo si tenemos clientes cargados
+    if (len(clientes) > 0):
+        # Recorremos la lista de clientes
+        for i in range(len(clientes)):
+            # Vamos a aprovechar la función en el módulo de operaciones
+            # para saber cuántas compras tiene el cliente actual
+            comprasCliente = obtenerOperacionesPorCliente(clientes[i], True)
+            operaciones.append(len(comprasCliente))
+
+        # Perfecto, tenemos la lista, ahora la empaquetamos para después ordenarla
+        listaCompras = [(operaciones[i], clientes[i]) for i in range(len(operaciones))]
+
+        # Ordenamos de mayor a menor por la cantidad de operaciones
+        # Referencia: Página 70 PPT Clase 1
+        listaCompras.sort(reverse=True)
+
+        # Separar los valores en dos listas
+        clientesOrdenados = [tupla[1] for tupla in listaCompras]
+        cantidadesOrdenadas = [tupla[0] for tupla in listaCompras]
         
-        if (i == 0):
-            cantidadCompras = len(comprasCliente)
-        elif (len(comprasCliente) > cantidadCompras):
-            indiceMasCompras = i
-            cantidadCompras = len(comprasCliente)
+        # Iteramos y generamos las filas para la tabla
+        for i in range(len(clientesOrdenados)):
+            filas.append([clientesOrdenados[i], cantidadesOrdenadas[i]])
+            datosReporte.append(str(clientesOrdenados[i]) + ";" + str(cantidadesOrdenadas[i]))
 
-    # Qué pasa si no hay compras?
-    if cantidadCompras == 0:
-        print("No hay suficientes datos para mostrar.")
+        # Mostramos en Tabla
+        crearTabla(columnas, filas)
+
+        # Generamos el archivo de reporte
+        generarReporte(datosReporte, "clientes_compras")
     else:
-        print(f"El cliente {clientes[indiceMasCompras]} tiene {cantidadCompras} compras.")
+        print("No hay suficientes datos para mostrar.")
 
-    input("Presione Enter para continuar")
+    input("Presione Enter para continuar...")
 
 def clientesDeudores():
     limpiarTerminal()
@@ -104,6 +122,7 @@ def clientesDeudores():
 
     columnas = ["Cliente", "Saldo"]
     filas = []
+    datosReporte = []
 
     # Recorremos la lista de clientes y consultamos su deuda
     for i in range(len(clientes)):
@@ -112,11 +131,15 @@ def clientesDeudores():
 
         if (clienteSaldo < 0):
             filas.append([clientes[i], "$" + str(clienteSaldo)])
+            datosReporte.append(str(clientes[i]) + ";" + str(clienteSaldo))
 
     # Mostramos en Tabla
     crearTabla(columnas, filas)
 
-    input("Presione Enter para continuar")
+    # Generamos el archivo de reporte
+    generarReporte(datosReporte, "clientes_deudores")
+
+    input("Presione Enter para continuar...")
 
 def generarClientesRandom():
     limpiarTerminal()

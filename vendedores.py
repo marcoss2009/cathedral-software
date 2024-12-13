@@ -1,5 +1,6 @@
 from tablas import crearTabla
 from terminal import limpiarTerminal
+from reportes import generarReporte
 
 cuentas = {
     "1000": 1234,
@@ -84,11 +85,11 @@ def cuentasCorrientesVendedor():#chequear como recibo la lista de vendedores
     finally:
         archivo.close()
         
-    input("presione enter para continuar")
+    input("Presione enter para continuar...")
         
-def vendedorConMasVentas():
+def ventasVendedores():
     limpiarTerminal()
-    print(" Vendedor con más Ventas ".center(80, '-'))
+    print(" Totales de Ventas por Vendedor ".center(80, '-'))
     
     try:    
         archivo = open(r'operaciones.csv', mode='rt') #chequear nombre del archivo
@@ -118,20 +119,44 @@ def vendedorConMasVentas():
                     if operacion == 1:
                         mayorSaldo[indiceVendedor] = mayorSaldo[indiceVendedor] + monto   
                 
-                mayorVendedor = max(mayorSaldo)
-                indiceMayorVendedor = mayorSaldo.index(mayorVendedor)
+                #mayorVendedor = max(mayorSaldo)
+                #indiceMayorVendedor = mayorSaldo.index(mayorVendedor)
         finally:
             archivo.close()
             
         if len(mayorSaldo) > 0:  # Verifica que no esté vacío
-            mayorVendedor = max(mayorSaldo)
-            indiceMayorVendedor = mayorSaldo.index(mayorVendedor)
-        
-            print(f"El vendedor con más ventas es el vendedor numero: {ventasVendedores[indiceMayorVendedor]} con una suma de ventas de ${mayorVendedor}")
+            # Me tomo el atrevimiento de modificar el comportamiento de esta función a partir de acá
+            # En vez de mostrar un único vendedor mostraremos a todos ordenados de mayor a menor por el monto de ventas totales
+            # Inicializamos los parámetros para mostar una tabla
+            columnas = ["Vendedor", "Monto de Ventas"]
+            filas = []
+            datosReporte = []
+
+            # Empaquetamos las listas para después ordenarla
+            listaVentas = [(mayorSaldo[i], ventasVendedores[i]) for i in range(len(mayorSaldo))]
+            
+            # Ordenamos de mayor a menor por monto de operación
+            # Referencia: Página 70 PPT Clase 1
+            listaVentas.sort(reverse=True)
+
+            # Separar los valores en dos listas
+            vendedoresOrdenados = [tupla[1] for tupla in listaVentas]
+            montosOrdenados = [tupla[0] for tupla in listaVentas]
+
+            # Iteramos y generamos las filas para la tabla
+            for i in range(len(vendedoresOrdenados)):
+                filas.append([vendedoresOrdenados[i], "$" + str(montosOrdenados[i])])
+                datosReporte.append(str(vendedoresOrdenados[i]) + ";" + str(montosOrdenados[i]))
+
+            # Mostramos en Tabla
+            crearTabla(columnas, filas)
+
+            # Generamos el archivo de reporte
+            generarReporte(datosReporte, "vendedores_ventas")
         else:
             print("No se encontraron datos de ventas.")
             
-    input("presione enter para continuar")
+    input("Presione enter para continuar...")
             
             
 
