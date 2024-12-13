@@ -6,7 +6,8 @@ cuentas = {
     "1001": 2345,
     "1002": 3456,
     "1003": 4567,
-    "1004": 5678}
+    "1004": 5678
+}
 
 def cuentasCorrientesVendedor():#chequear como recibo la lista de vendedores
     limpiarTerminal()
@@ -60,9 +61,9 @@ def cuentasCorrientesVendedor():#chequear como recibo la lista de vendedores
                     
                     # Actualizar saldo según tipo de operación
                     if operacion == 1:
-                        saldoLista[indice_cliente] += monto
-                    elif operacion == 0:
                         saldoLista[indice_cliente] -= monto
+                    elif operacion == 0:
+                        saldoLista[indice_cliente] += monto
                         
         print(f" Cuentas Corrientes del Vendedor: {vendedorBuscado} ".center(80, '-'))
         
@@ -90,38 +91,39 @@ def vendedorConMasVentas():
     print(" Vendedor con más Ventas ".center(80, '-'))
     
     try:    
-        archivo = open('operaciones.csv', mode='rt') #chequear nombre del archivo
+        archivo = open(r'operaciones.csv', mode='rt') #chequear nombre del archivo
     except IOError:
         print("Error al abrir el archivo")
     else:
-        
         ventasVendedores = [] #lista que almacena los ID de los vendedores
         mayorSaldo = [] #lista hermanada que almacena el total de ventas de cada vendedor
-        
-        for linea in archivo:
-            cliente, vendedor, operacion, monto = linea.split(";")
-            
-            # Convertir valores a enteros
-            cliente = int(cliente)
-            vendedor = int(vendedor)
-            operacion = int(operacion)
-            monto = int(monto)
-            
-            if vendedor not in ventasVendedores:
-                ventasVendedores.append(vendedor)
-                if operacion == 0:
-                    mayorSaldo.append(0)
+        try:
+            for linea in archivo:
+                cliente, vendedor, operacion, monto = linea.split(";")
+                
+                # Convertir valores a enteros
+                cliente = int(cliente)
+                vendedor = int(vendedor)
+                operacion = int(operacion)
+                monto = int(monto)
+                
+                if vendedor not in ventasVendedores:
+                    ventasVendedores.append(vendedor)
+                    if operacion == 0:
+                        mayorSaldo.append(0)
+                    else:
+                        mayorSaldo.append(monto)
                 else:
-                    mayorSaldo.append(monto)
-            else:
-                indiceVendedor = ventasVendedores.index(vendedor)
-                if operacion == 1:
-                    mayorSaldo[indiceVendedor] = mayorSaldo[indiceVendedor] + monto   
-             
-        mayorVendedor = max(mayorSaldo)
-        indiceMayorVendedor = mayorSaldo.index(mayorVendedor)
-        
-        if mayorSaldo:  # Verifica que no esté vacío
+                    indiceVendedor = ventasVendedores.index(vendedor)
+                    if operacion == 1:
+                        mayorSaldo[indiceVendedor] = mayorSaldo[indiceVendedor] + monto   
+                
+                mayorVendedor = max(mayorSaldo)
+                indiceMayorVendedor = mayorSaldo.index(mayorVendedor)
+        finally:
+            archivo.close()
+            
+        if len(mayorSaldo) > 0:  # Verifica que no esté vacío
             mayorVendedor = max(mayorSaldo)
             indiceMayorVendedor = mayorSaldo.index(mayorVendedor)
         

@@ -3,6 +3,7 @@ from tablas import crearTabla
 from clientes import verificarCliente, cantidadClientes, listaClientes, actualizarSaldo
 from vendedores import verificarVendedor, obtenerVendedores
 from random import randint
+import datetime
 
 def cargarOpereacion(cliente, vendedor, operacion, monto):
     '''''
@@ -19,6 +20,43 @@ def cargarOpereacion(cliente, vendedor, operacion, monto):
         # Actualizamos el saldo del cliente
         actualizarSaldo(cliente, monto, operacion)
         archivoOperaciones.close()
+
+# Comprobar si un archivo existe
+def comprobarArchivo(nombreArchivo):
+    try:
+        archivo = open(r""+nombreArchivo, "rt")
+    except IOError:
+        existeArchivo = False
+    else:
+        # El archivo existe
+        existeArchivo = True
+
+        archivo.close()
+
+    return existeArchivo
+
+def generarArchivoReporte(datos = [], nombreReporte = "reporte"):
+    while True:
+        # Generamos le nombre del archivo
+        now = datetime.datetime.now()
+        archivoID = now.strftime("%Y_%m_%d-%H-%M-%S")
+        nombreArchivo = f"reportes/{nombreReporte}_{archivoID}.csv"
+        
+        # Si el archivo no existe rompemos el ciclo
+        if(comprobarArchivo(nombreArchivo) == False):
+            break;
+    
+    try:
+        archivoReportes = open(r""+nombreArchivo, "wt")
+    except IOError:
+        print("ERROR al abrir el archivo de reportes")
+    else:
+        for i in range(len(datos)):
+            archivoReportes.write(datos[i])
+            archivoReportes.write("\n")
+
+        archivoReportes.close()
+        
 
 def leerOperaciones(busqueda = "operacion", filtro = 0):
     filas = []
@@ -49,7 +87,7 @@ def leerOperaciones(busqueda = "operacion", filtro = 0):
 
                 # Leemos la próxima línea
                 linea = archivoOperaciones.readline()
-        finally:            
+        finally:        
             archivoOperaciones.close()
     
     # Creamos la Tabla
@@ -255,36 +293,41 @@ def generarOperacionesRandom():
 
     print(" Generar Operaciones al Azar ".center(80,'-'))
 
-    # Obtener un número entre 1 y 20 para generar x cantidad de operaciones
-    cantidadOperaciones = randint(1, 20)
-
-    # Perfecto, lo que necesitamos para generar una operación son los siguientes parámetros
-    # Clientes, Vendedores, Tipo de Operacion y Monto
-    # Lo repetimos la cantidad de veces que obtuvimos arriba
-
     # Obtenemos la lista de clientes
     clientes = listaClientes()
-    
-    # Obtenemos la lista de vendedores
-    vendedores = obtenerVendedores()
 
-    for i in range(cantidadOperaciones):
-        # Tomamos el índice de un cliente al azar
-        clienteRandom = randint(0,len(clientes) - 1)
+    # Verificamos si tenemos la suficiente cantidad de clientes para generar operaciones al azar
+    if len(clientes) <= 0:
+        print(" No hay suficiente cantidad de datos para ejecutar esta operación. ".center(80,'-'))
+    else:
+        # Obtener un número entre 1 y 20 para generar x cantidad de operaciones
+        cantidadOperaciones = randint(1, 20)
 
-        # Tomamos el índice de un vendedor al azar
-        vendedorRandom = randint(0, len(vendedores) - 1)
+        # Perfecto, lo que necesitamos para generar una operación son los siguientes parámetros
+        # Clientes, Vendedores, Tipo de Operacion y Monto
+        # Lo repetimos la cantidad de veces que obtuvimos arriba
+        
+        # Obtenemos la lista de vendedores
+        vendedores = obtenerVendedores()
 
-        # Vamos a determinar si esto va a ser una factura o un recibo
-        tipoOperacion = randint(0, 1)
+        for i in range(cantidadOperaciones):
+            # Tomamos el índice de un cliente al azar
+            clienteRandom = randint(0,len(clientes) - 1)
 
-        # Por último tomamos un monto random, preferentemente de 4 dígitos
-        montoOperacion = randint(1000, 9999)
+            # Tomamos el índice de un vendedor al azar
+            vendedorRandom = randint(0, len(vendedores) - 1)
 
-        # Perfecto, cargamos la operacion
-        cargarOpereacion(clientes[clienteRandom], vendedores[vendedorRandom], tipoOperacion, montoOperacion)
+            # Vamos a determinar si esto va a ser una factura o un recibo
+            tipoOperacion = randint(0, 1)
 
-    print(f" Se han generado {cantidadOperaciones} de operaciones al azar ".center(80, '-'))
+            # Por último tomamos un monto random, preferentemente de 4 dígitos
+            montoOperacion = randint(1000, 9999)
+
+            # Perfecto, cargamos la operacion
+            cargarOpereacion(clientes[clienteRandom], vendedores[vendedorRandom], tipoOperacion, montoOperacion)
+
+        print(f" Se han generado {cantidadOperaciones} de operaciones al azar ".center(80, '-'))
+        
     input("Presione Enter para continuar...")
 
 def cuentaCorriente():
@@ -293,66 +336,71 @@ def cuentaCorriente():
 
     print(" Vista de Cuenta Corriente por Cliente ".center(80,'-'))
 
-    # Vamos a solicitar un cliente
-    while True:
-        try:
-            clienteBuscar = int(input("Ingrese el Número de Cliente para consultar: "))
-        except ValueError:
-            print("ERROR: El Número de Cliente debe ser un número")
-        else:
-            # Verificamos si el cliente existe
-            if (verificarCliente(clienteBuscar) == False):
-                print("El cliente ingresado no existe.")
-            else:
-                # El cliente existe, rompemos el ciclo y continuamos
-                break;
-
-    # Seteamos la tabla
-    columnasMovimientos = ["Movimiento", "Debe", "Haber"]
-    filasMovimientos = []
-    debe = 0
-    haber = 0
-
-    '''''
-    Nombre del archivo: operaciones.csv
-    Entramos al archivo EN MODO LECTURA
-    '''''
-    try:
-        archivoOperaciones = open(r"operaciones.csv", "rt")
-    except IOError:
-        print("ERROR al abrir el archivo de operaciones")
+    # Hay suficiente cantidad de operaciones para mostrar estos datos?
+    if (cantidadOperaciones() <= 0):
+        print(" No hay suficiente cantidad de datos para ejecutar esta operación. ".center(80,'-'))
     else:
+        # Vamos a solicitar un cliente
+        while True:
+            try:
+                clienteBuscar = int(input("Ingrese el Número de Cliente para consultar: "))
+            except ValueError:
+                print("ERROR: El Número de Cliente debe ser un número")
+            else:
+                # Verificamos si el cliente existe
+                if (verificarCliente(clienteBuscar) == False):
+                    print("El cliente ingresado no existe.")
+                else:
+                    # El cliente existe, rompemos el ciclo y continuamos
+                    break;
+
+        # Seteamos la tabla
+        columnasMovimientos = ["Movimiento", "Debe", "Haber"]
+        filasMovimientos = []
+        debe = 0
+        haber = 0
+
+        '''''
+        Nombre del archivo: operaciones.csv
+        Entramos al archivo EN MODO LECTURA
+        '''''
         try:
-            # Leemos el archivo
-            linea = archivoOperaciones.readline()
-            
-            while linea:
-                cliente, vendedor, operacion, monto = linea.split(";")
-                if (int(cliente) == clienteBuscar):
-                    # Lo mostramos en Modo Tabla
-                    # Al monto primero lo convertimos a int para eliminar el salto de línea
-                    # y luego a texto nuevamente para poder concatenarlo con el símbolo "$"
-                    filasMovimientos.append([("Factura" if bool(int(operacion)) == True else "Recibo"), ("$" + str(int(monto)) if bool(int(operacion)) == True else ""), ("" if bool(int(operacion)) == True else "$" + str(int(monto)))])
-
-                    # Sumamos Debe o Haber
-                    if bool(int(operacion)) == True:
-                        # Es una Factura, sumamos en Debe
-                        debe = debe + int(monto)
-                    else:
-                        # Es un Recibo, sumamos en Haner
-                        haber = haber + int(monto)
-
-                # Leemos la próxima línea
+            archivoOperaciones = open(r"operaciones.csv", "rt")
+        except IOError:
+            print("ERROR al abrir el archivo de operaciones")
+        else:
+            try:
+                # Leemos el archivo
                 linea = archivoOperaciones.readline()
-        finally:            
-            archivoOperaciones.close()
+                
+                while linea:
+                    cliente, vendedor, operacion, monto = linea.split(";")
+                    if (int(cliente) == clienteBuscar):
+                        # Lo mostramos en Modo Tabla
+                        # Al monto primero lo convertimos a int para eliminar el salto de línea
+                        # y luego a texto nuevamente para poder concatenarlo con el símbolo "$"
+                        filasMovimientos.append([("Factura" if bool(int(operacion)) == True else "Recibo"), ("$" + str(int(monto)) if bool(int(operacion)) == True else ""), ("" if bool(int(operacion)) == True else "$" + str(int(monto)))])
 
-    # Sumamos como última fila al total de debe y haber
-    filasMovimientos.append(["Suma de Movimientos", "$" + str(debe), "$" + str(haber)])
-    filasMovimientos.append(["", "Saldo Final: ", "$" + str(haber-debe)])
-    
-    # Creamos la Tabla
-    crearTabla(columnasMovimientos, filasMovimientos)
+                        # Sumamos Debe o Haber
+                        if bool(int(operacion)) == True:
+                            # Es una Factura, sumamos en Debe
+                            debe = debe + int(monto)
+                        else:
+                            # Es un Recibo, sumamos en Haner
+                            haber = haber + int(monto)
+
+                    # Leemos la próxima línea
+                    linea = archivoOperaciones.readline()
+            finally:            
+                archivoOperaciones.close()
+
+        # Sumamos como última fila al total de debe y haber
+        filasMovimientos.append(["Suma de Movimientos", "$" + str(debe), "$" + str(haber)])
+        filasMovimientos.append(["", "Saldo Final: ", "$" + str(haber-debe)])
+        
+        # Creamos la Tabla
+        crearTabla(columnasMovimientos, filasMovimientos)
+
     input("Presione Enter para continuar...")
 
 '''''

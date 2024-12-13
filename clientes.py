@@ -48,23 +48,28 @@ def consultarCliente():
     cargarLista(clientesCargados)
 
     print(" Consultar Clientes ".center(80,'-'))
-    while True:
-        try:
-            numeroCliente = int(input("Ingrese el Número de Cliente: "))
-        except ValueError:
-            print("ERROR: el Código de Cliente debe ser númerico")
-        else:
-            # El código de cliente proporcionado es un número
-            if (verificarCliente(numeroCliente) == True):
-                # El cliente existe, rompemos el ciclo
-                break
+
+    # Tenemos suficiente cantidad de clientes para ejecutar esta operación?
+    if cantidadClientes() <= 0:
+        print(" No hay suficiente cantidad de datos para ejecutar esta operación. ".center(80,'-'))
+    else:
+        while True:
+            try:
+                numeroCliente = int(input("Ingrese el Número de Cliente: "))
+            except ValueError:
+                print("ERROR: el Código de Cliente debe ser númerico")
             else:
-                # El cliente no existe
-                print("El cliente indicado no existe")
-    # Ya tengo el número de cliente en la variable numeroCliente
-    # Ahora busco el saldo en la lista saldos
-    indiceCliente = clientes.index(numeroCliente)
-    print(f"El saldo del cliente {numeroCliente} es ${saldos[indiceCliente]}")
+                # El código de cliente proporcionado es un número
+                if (verificarCliente(numeroCliente) == True):
+                    # El cliente existe, rompemos el ciclo
+                    break
+                else:
+                    # El cliente no existe
+                    print("El cliente indicado no existe")
+        # Ya tengo el número de cliente en la variable numeroCliente
+        # Ahora busco el saldo en la lista saldos
+        indiceCliente = clientes.index(numeroCliente)
+        print(f"El saldo del cliente {numeroCliente} es ${saldos[indiceCliente]}")
 
     input("Presione Enter para continuar")
 
