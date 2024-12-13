@@ -111,11 +111,8 @@ def cargaOperaciones(cuentas):
         Solicitamos el Vendedor
         No necesitaremos una excepción debido a que el vendedor es un valor string
         Luego tendremos que verificar si este vendedor existe con ayuda de alguna función del módulo de Vendedores para tal fin
-
-        Al igual que en el menú, vendedor va a valer cero hasta que el vendedor ingresado sea válido
         '''''
-        vendedor = 0
-        while(vendedor == 0):
+        while(True):
             try:
                 vendedor = int(input("Ingrese el Número de Vendedor: "))
             except ValueError:
@@ -128,15 +125,16 @@ def cargaOperaciones(cuentas):
                 '''''
                 if verificarVendedor(vendedor, cuentas) == False:
                     print('ERROR: El Vendedor ingresado no existe')
-                    vendedor = 0
+                else:
+                    # El vendedor existe, rompemos el ciclo y continuamos con la operación
+                    break;
             
         '''''
         Solicitamos el Tipo de Operación
         Creamos una excpción si el usuario ingresa algo distinto a un número
         Luego tendremos que verificar si el valor es 0 o 1
         '''''
-        operacion = -1
-        while (operacion == -1):
+        while (True):
             try:
                 operacion = int(input("Ingrese 0 si es Recibo o 1 si es Factura: "))
             except ValueError:
@@ -144,15 +142,16 @@ def cargaOperaciones(cuentas):
             else:
                 if operacion < 0 or operacion > 1:
                     print('ERROR: El Tipo de Operación debe ser 0 para Recibo o 1 para Factura')
-                    operacion = -1
+                else:
+                    # El dato de operación cumple con la condición, rompemos el ciclo y continuamos con la operación
+                    break;
 
         '''''
         Solicitamos el Monto de Operación
         Creamos una excpción si el usuario ingresa algo distinto a un número
         Luego tendremos que verificar si el monto es mayor a cero
         '''''
-        monto = 0
-        while (monto == 0):
+        while (True):
             try:
                 monto  = int(input("Ingrese Monto de Operación: "))
             except ValueError:
@@ -160,7 +159,9 @@ def cargaOperaciones(cuentas):
             else:
                 if (monto <= 0):
                     print('ERROR: El Monto de Operación debe ser mayor a cero')
-                    monto = 0
+                else:
+                    # El dato del monto cumple con la condición, rompemos el ciclo y continuamos con la operación
+                    break;
 
         '''''
         La operación fue Cargada de Forma Exitosa
