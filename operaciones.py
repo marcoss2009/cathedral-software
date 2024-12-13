@@ -1,6 +1,6 @@
 from terminal import limpiarTerminal
 from tablas import crearTabla
-from clientes import verificarCliente, cantidadClientes, listaClientes, actualizarSaldo
+from clientes import verificarCliente, cantidadClientes, obtenerClientes, actualizarSaldo
 from vendedores import verificarVendedor, obtenerVendedores
 from random import randint
 import datetime
@@ -294,7 +294,7 @@ def generarOperacionesRandom():
     print(" Generar Operaciones al Azar ".center(80,'-'))
 
     # Obtenemos la lista de clientes
-    clientes = listaClientes()
+    clientes = obtenerClientes()
 
     # Verificamos si tenemos la suficiente cantidad de clientes para generar operaciones al azar
     if len(clientes) <= 0:
