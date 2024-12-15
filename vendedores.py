@@ -44,7 +44,7 @@ def cuentasCorrientesVendedor(cuentas):#chequear como recibo la lista de vendedo
             if vendedor == vendedorBuscado:
                 if cliente not in clienteLista:
                     clienteLista.append(cliente)
-                    saldo_inicial = monto if operacion == 1 else -monto
+                    saldo_inicial = monto * -1 if operacion == 1 else monto
                     saldoLista.append(saldo_inicial)
                     operacionesLista.append([operacion])
                 else:
